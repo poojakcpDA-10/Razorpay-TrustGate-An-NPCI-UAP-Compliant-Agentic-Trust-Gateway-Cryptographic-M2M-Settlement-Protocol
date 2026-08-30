@@ -1,6 +1,6 @@
-🤖 Razorpay TrustGate
-          Subtitle: An NPCI UAP-Compliant Agentic Trust Gateway & Cryptographic M2M Settlement Protocol
- Prototype for the Razorpay AI Buildathon 2026 (AI Growth & Agentic Commerce Track)
+🤖 Razorpay TrustGate- An NPCI UAP-Compliant Agentic Trust Gateway & Cryptographic M2M Settlement Protocol
+
+ 
 📌 Project Overview
 
 The Razorpay Agentic Payments & Trust Gateway Suite is an end-to-end payment service and trust coordination network designed to transition digital commerce from human-centric "browsing and clicking" to autonomous, machine-to-machine (M2M) interactions.
