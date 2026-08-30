@@ -12,9 +12,13 @@ By wrapping Razorpay's Test-Mode APIs (Orders, Refunds, Route/Split) with statef
 As digital commerce transitions to autonomous AI agents acting on behalf of consumers, traditional payment gateways and checkout experiences fail due to several core architectural limits:
 
 The Parsing & Intent-Binding Bottleneck: Standard search systems and rigid regular expressions fail to interpret complex, conversational human requests (e.g., "Order fifty office chairs for forty thousand rupees"), often collapsing or falling back to default values.
+
 The Fixed List-Price Constraint: Existing checkout models are designed only for static, fixed list prices. However, in wholesale, bulk, or B2B procurement, dynamic price haggling and negotiation are standard practices.
+
 The Multi-Store Scrapyard: Buying agents waste massive computational resources, time, and bandwidth scraping and crawling dozens of individual merchant websites to discover inventory.
+
 The Security & Liability Gap: If an autonomous agent hallucinates or goes rogue, there are no guardrails to prevent it from overspending, causing severe financial liability.
+
 The Post-Purchase Dispute Loop: Traditional credit card disputes and chargeback cycles require manual intervention and take 7–15 business days. If an agent orders a premium item but receives a sub-standard product, a 15-day bank hold severely disrupts automated business supply chains.
 
 🌟 The 5-Stage Agentic Solution
@@ -38,31 +42,41 @@ Our Trust Gateway Suite systematically addresses these limitations by organizing
 Stage 1: Instruct & Bind (Pre-Transaction)
 
 The Interface: Users specify their purchasing goals in plain, unstructured English using a clean Natural Language Instruction Console (voice/microphone bridges are bypassed to ensure 100% browser and presentation stability).
+
 The AI Parser: Your FastAPI backend runs the prompt through an advanced AI extraction engine (powered by Claude 3.5 Sonnet via .env or a robust local fallback). It maps keywords to database schema models, converts written words (e.g. "fifty", "forty thousand") to numeric integers, and binds them to strict parameters (item, quantity, max_budget, category).
+
 The Gates: Users register a strict spending limit (mimicking NPCI's UAP UPI AutoPay mandates) and complete a WebAuthn Biometric Passkey Verification to bind the human owner to the agentic session.
 
 Stage 2: Discovery & Haggle
 
 Reverse Auction Broadcast: The Buyer Agent broadcasts the signed intent. Matching Merchant Bidding Agents programmatically evaluate stock, compute quotes with seeded variance, and respond with dynamic, short-lived Razorpay Payment Links valid for 3 minutes to maintain inventory lock-safety.
+
 Agent-to-Agent (A2A) Negotiation: The Buyer Agent selects the best bid and opens a stateful negotiation channel. The agents haggle over margins in exchange for concessions (e.g., "We'll pay immediately if you grant a 10% volume discount").
+
 The Deal Memo: Upon consensus, the agents sign and compile a cryptographic, human-auditable "Deal Memo" (JSON) accompanied by an HMAC-SHA256 signature to prevent tampering.
 
 Stage 3: Authorization & Spend-Control Checks
 
 Shared Payment Token (SPT): The gateway generates an SPT modeled after the Stripe/OpenAI ACP standard. This token is base64 encoded, cryptographically signed, and strictly micro-scoped to a single merchant_id, a single precise amount, and carries a strict 15-minute Time-To-Live (ttl_seconds = 900) expiration stamp.
+
 Policy Verification Gate: Before routing, the backend compares the SPT amount against the user's locked UPI-UAP spend limit. If the bargained price exceeds the pre-authorized ceiling, the SPT is blocked and the transaction fails gracefully, preventing rogue agent spend.
 
 Stage 4: Payment Execution & Syndicate Splitting
 
 Collaborative Syndicate Upsell: The gateway scans the network for non-competing, complementary merchants (e.g., a logistics provider when buying bulk office chairs). The agents negotiate a combined syndicate bundle discount in real-time.
+
 Razorpay Split Settlements: On checkout, the user makes a single consolidated payment. The gateway leverages Razorpay's Route / Split API to automatically calculate shares and disperse payouts directly to the primary merchant and the syndicate partner.
+
 Smart Escrow Pool: The principal funds are routed and locked inside a simulated RazorpayX Escrow+ Pool, held securely until successful post-delivery verification.
+
 Proof-of-Intent (PoI) Bundle: The Buyer Agent packages and signs a PoI bundle (storing the original user instructions and reasoning logs) and attaches it directly to the transaction payload.
 
 Stage 5: Self-Healing Disputes (Post-Transaction)
 
 The Mismatch: A merchant fails to deliver the specified goods or delivers a mismatched SKU (e.g. delivering "recycled paper" instead of the authorized "premium printing paper").
+
 Autonomous Resolution: Upon user flag, the Dispute Agent parses the PoI bundle and compares keywords against the delivered catalog specifications.
+
 Instant Automated Refund: Finding a quality mismatch, the Dispute Agent programmatically triggers an instant automated refund via the Razorpay Refunds API directly from the escrow pool, bypassing manual support wait times.
 
 🛠️ Complete Directory Structure
@@ -158,4 +172,3 @@ The sandbox mock files (backend/razorpay_mock.py and backend/security.py) are st
 
 
 
-Project created for the Razorpay AI Buildathon, August 2026
