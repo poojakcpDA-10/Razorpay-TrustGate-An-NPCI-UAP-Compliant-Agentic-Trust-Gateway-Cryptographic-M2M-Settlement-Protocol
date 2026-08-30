@@ -1,174 +1,690 @@
-🤖 Razorpay TrustGate- An NPCI UAP-Compliant Agentic Trust Gateway & Cryptographic M2M Settlement Protocol
+# 🤖 Razorpay TrustGate
 
- 
-📌 Project Overview
+### An NPCI UAP-Compliant Agentic Trust Gateway & Cryptographic M2M Settlement Protocol
 
-The Razorpay Agentic Payments & Trust Gateway Suite is an end-to-end payment service and trust coordination network designed to transition digital commerce from human-centric "browsing and clicking" to autonomous, machine-to-machine (M2M) interactions.
+## 📌 Project Overview
 
-By wrapping Razorpay's Test-Mode APIs (Orders, Refunds, Route/Split) with stateful multi-agent orchestrators, this suite implements a futuristic payment gateway aligned with India's upcoming Unified Agent Protocol (UAP) by NPCI and the global Agentic Commerce Protocol (ACP). It systematically resolves the industry's largest agentic commerce bottlenecks: unstructured natural language parsing, autonomous volume haggling, cross-merchant collaborative upselling, agent spend limits, and real-time self-healing disputes.
+**Razorpay TrustGate** is an end-to-end **Agentic Payment & Trust Gateway** designed to transition digital commerce from traditional human-driven browsing and checkout to autonomous **Machine-to-Machine (M2M)** transactions.
 
-🛑 The Core Problem Statement
+The platform wraps **Razorpay Test-Mode APIs** such as Orders, Refunds, and Route/Split with stateful multi-agent orchestration to demonstrate an agentic commerce architecture aligned with the emerging **Unified Agent Protocol (UAP)** ecosystem and global **Agentic Commerce Protocol (ACP)** concepts.
 
-As digital commerce transitions to autonomous AI agents acting on behalf of consumers, traditional payment gateways and checkout experiences fail due to several core architectural limits:
+The system addresses key challenges in agentic commerce, including:
 
-The Parsing & Intent-Binding Bottleneck: Standard search systems and rigid regular expressions fail to interpret complex, conversational human requests (e.g., "Order fifty office chairs for forty thousand rupees"), often collapsing or falling back to default values.
+* Natural-language purchase intent parsing
+* Autonomous price negotiation
+* Multi-merchant collaboration
+* Agent spending limits
+* Cryptographic authorization
+* Escrow-based settlement
+* Automated dispute resolution
 
-The Fixed List-Price Constraint: Existing checkout models are designed only for static, fixed list prices. However, in wholesale, bulk, or B2B procurement, dynamic price haggling and negotiation are standard practices.
+---
 
-The Multi-Store Scrapyard: Buying agents waste massive computational resources, time, and bandwidth scraping and crawling dozens of individual merchant websites to discover inventory.
+# 🛑 Problem Statement
 
-The Security & Liability Gap: If an autonomous agent hallucinates or goes rogue, there are no guardrails to prevent it from overspending, causing severe financial liability.
+As AI agents increasingly act on behalf of consumers, traditional payment gateways are not designed to safely handle autonomous decision-making.
 
-The Post-Purchase Dispute Loop: Traditional credit card disputes and chargeback cycles require manual intervention and take 7–15 business days. If an agent orders a premium item but receives a sub-standard product, a 15-day bank hold severely disrupts automated business supply chains.
+### 1. Parsing & Intent-Binding Bottleneck
 
-🌟 The 5-Stage Agentic Solution
+Traditional search systems and rigid regular expressions struggle to understand complex natural-language purchasing requests.
 
-Our Trust Gateway Suite systematically addresses these limitations by organizing the payment flow into 5 secure, explainable, and cryptographically bounded stages:
+For example:
 
- [ Stage 1: Instruct & Bind ] ──► [ Stage 2: Discovery & Haggle ] ──► [ Stage 3: Authorization ]
-             │                                     │                                    │
-             ▼                                     ▼                                    ▼
-  • Natural Language Console            • Reverse Auction Bidding            • Shared Payment Token
-  • NPCI UAP Spend Limits               • A2A Conversational Haggle          • Cryptographic Bounds
-  • WebAuthn Biometric Gate             • Signed JSON "Deal Memo"            • Live Policy Check
-                                                                                        │
- [ Stage 5: Self-Healing Dispute ] ◄── [ Stage 4: Execution & Escrow ] ◄────────────────┘
-             │                                     │
-             ▼                                     ▼
-  • Proof-of-Intent (PoI) Audit         • Single-Click Razorpay Order
-  • Escrow Lock & Release               • Cross-Merchant Syndicate Split
-  • Automated Refunds API               • RazorpayX Escrow+ Pool
+> "Order fifty office chairs for forty thousand rupees."
 
-Stage 1: Instruct & Bind (Pre-Transaction)
+The system needs to correctly identify:
 
-The Interface: Users specify their purchasing goals in plain, unstructured English using a clean Natural Language Instruction Console (voice/microphone bridges are bypassed to ensure 100% browser and presentation stability).
+* Product
+* Quantity
+* Maximum budget
+* Category
+* Purchase intent
 
-The AI Parser: Your FastAPI backend runs the prompt through an advanced AI extraction engine (powered by Claude 3.5 Sonnet via .env or a robust local fallback). It maps keywords to database schema models, converts written words (e.g. "fifty", "forty thousand") to numeric integers, and binds them to strict parameters (item, quantity, max_budget, category).
+---
 
-The Gates: Users register a strict spending limit (mimicking NPCI's UAP UPI AutoPay mandates) and complete a WebAuthn Biometric Passkey Verification to bind the human owner to the agentic session.
+### 2. Fixed List-Price Constraint
 
-Stage 2: Discovery & Haggle
+Traditional checkout systems primarily operate using fixed prices.
 
-Reverse Auction Broadcast: The Buyer Agent broadcasts the signed intent. Matching Merchant Bidding Agents programmatically evaluate stock, compute quotes with seeded variance, and respond with dynamic, short-lived Razorpay Payment Links valid for 3 minutes to maintain inventory lock-safety.
+However, wholesale and B2B procurement frequently require:
 
-Agent-to-Agent (A2A) Negotiation: The Buyer Agent selects the best bid and opens a stateful negotiation channel. The agents haggle over margins in exchange for concessions (e.g., "We'll pay immediately if you grant a 10% volume discount").
+* Bulk discounts
+* Dynamic pricing
+* Negotiation
+* Volume-based offers
 
-The Deal Memo: Upon consensus, the agents sign and compile a cryptographic, human-auditable "Deal Memo" (JSON) accompanied by an HMAC-SHA256 signature to prevent tampering.
+---
 
-Stage 3: Authorization & Spend-Control Checks
+### 3. Multi-Store Discovery Problem
 
-Shared Payment Token (SPT): The gateway generates an SPT modeled after the Stripe/OpenAI ACP standard. This token is base64 encoded, cryptographically signed, and strictly micro-scoped to a single merchant_id, a single precise amount, and carries a strict 15-minute Time-To-Live (ttl_seconds = 900) expiration stamp.
+An autonomous purchasing agent may need to search multiple merchants to find the best inventory, price, and delivery option.
 
-Policy Verification Gate: Before routing, the backend compares the SPT amount against the user's locked UPI-UAP spend limit. If the bargained price exceeds the pre-authorized ceiling, the SPT is blocked and the transaction fails gracefully, preventing rogue agent spend.
+This creates unnecessary:
 
-Stage 4: Payment Execution & Syndicate Splitting
+* Crawling
+* Scraping
+* API requests
+* Computational overhead
 
-Collaborative Syndicate Upsell: The gateway scans the network for non-competing, complementary merchants (e.g., a logistics provider when buying bulk office chairs). The agents negotiate a combined syndicate bundle discount in real-time.
+---
 
-Razorpay Split Settlements: On checkout, the user makes a single consolidated payment. The gateway leverages Razorpay's Route / Split API to automatically calculate shares and disperse payouts directly to the primary merchant and the syndicate partner.
+### 4. Security & Liability Gap
 
-Smart Escrow Pool: The principal funds are routed and locked inside a simulated RazorpayX Escrow+ Pool, held securely until successful post-delivery verification.
+If an autonomous agent makes an incorrect decision or attempts to spend beyond the user's authorization, there must be strict financial guardrails.
 
-Proof-of-Intent (PoI) Bundle: The Buyer Agent packages and signs a PoI bundle (storing the original user instructions and reasoning logs) and attaches it directly to the transaction payload.
+Without spending limits and cryptographic authorization, autonomous payments create significant financial risk.
 
-Stage 5: Self-Healing Disputes (Post-Transaction)
+---
 
-The Mismatch: A merchant fails to deliver the specified goods or delivers a mismatched SKU (e.g. delivering "recycled paper" instead of the authorized "premium printing paper").
+### 5. Post-Purchase Dispute Loop
 
-Autonomous Resolution: Upon user flag, the Dispute Agent parses the PoI bundle and compares keywords against the delivered catalog specifications.
+Traditional payment disputes can require manual intervention and lengthy processing.
 
-Instant Automated Refund: Finding a quality mismatch, the Dispute Agent programmatically triggers an instant automated refund via the Razorpay Refunds API directly from the escrow pool, bypassing manual support wait times.
+For autonomous commerce, dispute resolution needs to be faster and machine-readable.
 
-🛠️ Complete Directory Structure
+---
 
-Below is the directory tree of the repository, highlighting where the stateful agentic code, database schemas, and frontend interfaces are located:
+# 🌟 5-Stage Agentic Architecture
 
+```text
+┌─────────────────────────────┐
+│ Stage 1: Instruct & Bind    │
+│                             │
+│ • Natural Language Input    │
+│ • Spend Limits              │
+│ • WebAuthn Verification     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Stage 2: Discovery & Haggle │
+│                             │
+│ • Merchant Discovery        │
+│ • Reverse Auction           │
+│ • A2A Negotiation           │
+│ • Signed Deal Memo          │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Stage 3: Authorization      │
+│                             │
+│ • Shared Payment Token      │
+│ • Cryptographic Bounds      │
+│ • Policy Verification       │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Stage 4: Execution & Escrow │
+│                             │
+│ • Razorpay Order            │
+│ • Syndicate Splitting       │
+│ • Escrow Pool               │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│ Stage 5: Self-Healing       │
+│ Dispute Resolution          │
+│                             │
+│ • Proof-of-Intent           │
+│ • Delivery Verification     │
+│ • Automated Refund          │
+└─────────────────────────────┘
+```
+
+---
+
+# 🔐 Stage 1 — Instruct & Bind
+
+The user specifies a purchasing goal using **natural language**.
+
+Example:
+
+> "Buy 50 office chairs for a maximum budget of ₹40,000."
+
+The AI parsing engine converts this unstructured request into structured parameters:
+
+```json
+{
+  "item": "office chairs",
+  "quantity": 50,
+  "max_budget": 40000,
+  "category": "office furniture"
+}
+```
+
+The system also applies:
+
+* User spending limits
+* Agent authorization
+* WebAuthn biometric/passkey verification
+
+This establishes a secure relationship between the **human owner and autonomous agent**.
+
+---
+
+# 🤝 Stage 2 — Discovery & Haggle
+
+The Buyer Agent broadcasts the signed purchasing intent to participating Merchant Agents.
+
+Merchant Agents evaluate:
+
+* Inventory
+* Pricing
+* Quantity
+* Delivery time
+* Discount possibilities
+
+They respond with dynamic bids.
+
+The Buyer Agent selects the most suitable offer and initiates an **Agent-to-Agent negotiation**.
+
+Example:
+
+> Buyer Agent: "We can complete payment immediately if you provide a 10% volume discount."
+
+Once both agents reach an agreement, the system creates a cryptographically signed **Deal Memo**.
+
+The Deal Memo is protected using:
+
+**HMAC-SHA256**
+
+to detect unauthorized modification.
+
+---
+
+# 🛡️ Stage 3 — Authorization & Spend Control
+
+After negotiation, the gateway generates a **Shared Payment Token (SPT)**.
+
+The token is:
+
+* Base64 encoded
+* Cryptographically signed
+* Bound to a specific merchant
+* Bound to a precise transaction amount
+* Time-limited
+
+The prototype uses:
+
+```text
+TTL = 900 seconds
+```
+
+or approximately **15 minutes**.
+
+Before payment execution, the backend verifies:
+
+```text
+Requested Amount
+        ≤
+Authorized Spend Limit
+```
+
+If the negotiated price exceeds the user's authorized spending limit, the transaction is blocked.
+
+This prevents an autonomous agent from exceeding its financial authority.
+
+---
+
+# 💳 Stage 4 — Payment Execution & Syndicate Splitting
+
+The gateway supports collaborative purchasing between complementary merchants.
+
+For example:
+
+```text
+Office Furniture Merchant
+          +
+Logistics Provider
+          ↓
+Collaborative Bundle
+```
+
+The buyer makes a single consolidated payment.
+
+The system then demonstrates how **Razorpay Route/Split** can distribute the appropriate settlement shares between participating merchants.
+
+The architecture also includes a simulated **RazorpayX Escrow+ Pool**.
+
+Funds remain locked until the post-delivery verification stage.
+
+---
+
+# 📜 Proof-of-Intent (PoI)
+
+The Buyer Agent generates a **Proof-of-Intent bundle** containing:
+
+* Original user instruction
+* Structured intent
+* Transaction information
+* Agent reasoning/audit information
+
+The bundle is cryptographically signed and associated with the transaction.
+
+This provides an auditable connection between:
+
+```text
+Human Intent
+      ↓
+AI Decision
+      ↓
+Negotiated Deal
+      ↓
+Payment
+```
+
+---
+
+# 🔄 Stage 5 — Self-Healing Dispute Resolution
+
+After delivery, the user can report a mismatch.
+
+Example:
+
+```text
+Authorized:
+Premium Printing Paper
+
+Delivered:
+Recycled Paper
+```
+
+The Dispute Agent analyzes the original Proof-of-Intent and compares it with the delivered product information.
+
+If a mismatch is detected, the system can trigger an automated refund through the Razorpay Refunds API in the simulated environment.
+
+This reduces dependency on manual dispute processing.
+
+---
+
+# 🧠 AI Architecture
+
+The AI layer is responsible for:
+
+```text
+Natural Language Input
+        ↓
+Intent Extraction
+        ↓
+Structured Parameters
+        ↓
+Merchant Discovery
+        ↓
+Negotiation
+        ↓
+Deal Formation
+        ↓
+Transaction Validation
+        ↓
+Dispute Analysis
+```
+
+The backend supports an AI extraction engine using **Claude 3.5 Sonnet** through environment configuration, with a local fallback parser when the API key is unavailable.
+
+---
+
+# 🏗️ Technology Stack
+
+## Backend
+
+* Python
+* FastAPI
+* Pydantic
+* SQLite
+* python-dotenv
+
+## AI
+
+* Claude 3.5 Sonnet
+* Natural Language Processing
+* Agentic workflows
+* Rule-based fallback parsing
+
+## Security
+
+* HMAC-SHA256
+* Cryptographic signing
+* WebAuthn Passkeys
+* Time-limited authorization tokens
+* Spend-limit enforcement
+
+## Frontend
+
+* Streamlit
+* Python
+
+## Payment Layer
+
+* Razorpay Orders
+* Razorpay Refunds
+* Razorpay Route/Split
+* Simulated Escrow
+* Shared Payment Token
+
+---
+
+# 📁 Project Structure
+
+```text
 razorpay-agentic-commerce/
-├── .env                              # Secure API keys (ANTHROPIC_API_KEY)
-├── run.py                            # Central Orchestrator launcher (starts Backend & Frontend)
-├── requirements.txt                  # Python dependency manifest
+│
+├── .env
+├── run.py
+├── requirements.txt
+│
 ├── backend/
 │   ├── __init__.py
-│   ├── main.py                       # FastAPI application router & REST endpoints (Stages 1-5)
-│   ├── models.py                     # Pydantic schemas for endpoint data-contracts
-│   ├── agents.py                     # Core AI Layer (NL parser, Haggle transcript, Dispute validation)
-│   ├── security.py                   # Cryptographic signing, WebAuthn Passkeys, and SPT generation
-│   └── razorpay_mock.py              # Mock interfaces for Razorpay Orders, Route Splits, and Refunds
+│   ├── main.py
+│   ├── models.py
+│   ├── agents.py
+│   ├── security.py
+│   └── razorpay_mock.py
+│
 ├── database/
-│   ├── db.py                         # SQLite engine loader, seeding, and path overrides
-│   ├── schema.sql                    # SQL relational schemas for ACID database tables
-│   └── agentic_commerce.db           # Live SQL database file storing transaction trails (created on boot)
+│   ├── db.py
+│   ├── schema.sql
+│   └── agentic_commerce.db
+│
 └── frontend/
-    ├── Home.py                       # Streamlit multi-stage landing dashboard
-    ├── shared.py                     # Brand color palette, sidebar journey logs, and unified API caller
+    ├── Home.py
+    ├── shared.py
+    │
     └── pages/
-        ├── 1_Stage1_Instruct_and_Bind.py # Text-based NL instruction input console & Passkey verification
-        ├── 2_Stage2_Discovery_and_Haggle.py # Interactive Reverse Bidding lists and A2A Haggle chat window
-        ├── 3_Stage3_Authorization.py    # Dual spend limit checking, policy gate, and SPT JSON rendering
-        ├── 4_Stage4_Payment_and_Escrow.py # Syndicate upsell, Razorpay Checkout, Route Splits & Escrow details
-        ├── 5_Stage5_Dispute_Resolution.py # Simulated delivery mismatch input and instant auto-refunds
-        └── 6_Use_Cases.py                # Visual use cases displaying applicability of this PSP pattern
+        ├── 1_Stage1_Instruct_and_Bind.py
+        ├── 2_Stage2_Discovery_and_Haggle.py
+        ├── 3_Stage3_Authorization.py
+        ├── 4_Stage4_Payment_and_Escrow.py
+        ├── 5_Stage5_Dispute_Resolution.py
+        └── 6_Use_Cases.py
+```
 
-💾 Relational Database Schema (database/schema.sql)
+---
 
-The gateway guarantees absolute explainability by persisting all agent thought-paths and transactions in an ACID-compliant SQLite ledger:
+# 💾 Database Architecture
 
-users: Manages customer profiles, UPI handles, registered bank accounts, spend limits, and biometric passkey status.
-agents: Manages state, roles, and status of active network bots (buyer, merchant, dispute).
-merchants: Stores partner merchant catalogs, geographic locations, and base item pricing.
-intents: Stores original user raw prompts, parsed quantities, and the structured JSON output.
-bids: Tracks dynamic merchant response proposals, quoted prices, and delivery times.
-deals: Captures finalized bargained agreements, conversational logs, and HMAC-SHA256 signatures.
-orders: Records the active Razorpay Order IDs, the issued SPT token, and settlement totals.
-splits: Maps dynamic routing splits for primary merchants and collaborative syndicate partners.
-escrow: Tracks holding records and status (held, released, refunded) of the funds pool.
-poi_bundles: Stores cryptographically signed bundles linking the order to the original prompt.
-disputes: Logs transaction complaints, delivered descriptions, dispute statuses, and automated refund IDs.
+The system uses an **ACID-compliant SQLite database** to maintain transaction and agent state.
 
-🚀 Local Setup & Installation
-To run the Razorpay Agentic Payments & Trust Gateway Suite on your local machine, follow this step-by-step setup:
+### Core Tables
 
-1. Clone the repository
-Navigate to your developer directory:
+| Table         | Purpose                               |
+| ------------- | ------------------------------------- |
+| `users`       | Customer profiles and spending limits |
+| `agents`      | Agent roles and states                |
+| `merchants`   | Merchant catalogs and pricing         |
+| `intents`     | Original prompts and parsed intents   |
+| `bids`        | Merchant offers                       |
+| `deals`       | Negotiated agreements                 |
+| `orders`      | Payment and order information         |
+| `splits`      | Merchant settlement routing           |
+| `escrow`      | Fund holding and release status       |
+| `poi_bundles` | Proof-of-Intent records               |
+| `disputes`    | Complaints and refund records         |
 
-cd C:\Users\poojakc\razorpay-agentic-commerce\razorpay-agentic-commerce
-2. Install Python dependencies
-Install all required libraries, including FastAPI, Streamlit, and python-dotenv:
+---
 
+# 🚀 Installation & Setup
+
+## 1. Clone the Repository
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd razorpay-agentic-commerce
+```
+
+---
+
+## 2. Install Dependencies
+
+```bash
 python -m pip install -r requirements.txt
-(Alternatively, install them manually):
+```
 
+Or:
+
+```bash
 python -m pip install fastapi uvicorn streamlit pydantic requests python-dotenv anthropic
-3. Create and configure your .env file
-Create a text file named .env in the root directory (matching the folder tree above) and insert your Anthropic API key to enable Claude 3.5 Sonnet to parse your commands:
+```
 
+---
+
+## 3. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
 ANTHROPIC_API_KEY=your-actual-claude-api-key-here
-Note: Do not add quotation marks or spaces around the = sign in your .env file. If the key is missing or invalid, the backend will gracefully fall back to the built-in, robust local offline parsing engine.
+```
 
-4. Prevent Process/Port Conflicts
-If you have previously launched the server, older python subprocesses might be holding onto port 8000 or 8501. Clear them forcefully:
+> ⚠️ Never commit your `.env` file or API keys to GitHub.
 
+If the API key is unavailable, the system falls back to its local parsing engine.
+
+---
+
+## 4. Handle Port Conflicts
+
+If previous Python processes are occupying ports:
+
+```bash
 taskkill /F /IM python.exe
-5. Launch the Platform
-Start the central runner to boot both the FastAPI backend and Streamlit frontend concurrently:
+```
 
+---
+
+## 5. Start the Application
+
+```bash
 python run.py
-6. Run the Demo
-Open your web browser (Chrome or Edge recommended) and navigate to: 👉 http://localhost:8501
+```
 
-Main standards:
+The central runner starts both the backend and frontend.
 
-Direct Alignment with NPCI UAP & stripe/OpenAI ACP: 
-The project is built specifically to address the global 2026 agentic commerce standards. Stage 1's spend ceiling maps directly to UAP UPI AutoPay policies, while Stage 3's Shared Payment Token mimics the exact secure cryptographic token structures designed by Stripe and OpenAI.
+---
 
-No Hand-Waving: 100% Active Database Integration: 
-The UI does not use hardcoded static mockups. All data—including parsed intents, dynamic bids, haggled deal transcripts, splits, and dispute statuses—is actively saved, updated, and queried from a local SQLite database in real-time.
+## 6. Open the Demo
 
-Real Cryptography:
- Every crucial transaction step is mathematically secured. The deal memo, SPT, and PoI bundles are genuinely signed and verified using HMAC-SHA256 signatures via Python’s hmac and hashlib libraries, protecting the gateway against agent fraud or tampering.
+Open:
 
-Excellent Developer Experience (DX): 
-The sandbox mock files (backend/razorpay_mock.py and backend/security.py) are structured as explicit plug-and-play drop-in points. To scale this from a local prototype to a production-grade system, developers only need to swap the simulated endpoints inside razorpay_mock.py with the real Razorpay Python SDK (razorpay.Client(auth=(key, secret))), keeping the rest of the multi-agent state-machine entirely untouched!
+```text
+http://localhost:8501
+```
 
+---
 
+# 🔒 Security Design
 
+Security is implemented throughout the transaction lifecycle.
+
+### Cryptographic Protection
+
+The following components use cryptographic signing:
+
+* Deal Memo
+* Shared Payment Token
+* Proof-of-Intent Bundle
+
+The prototype uses:
+
+```text
+HMAC-SHA256
+```
+
+for integrity verification.
+
+### Spending Protection
+
+Every transaction is checked against the user's predefined spending limit.
+
+```text
+Agent Request
+      ↓
+Policy Check
+      ↓
+Spend Limit
+      ↓
+Cryptographic Authorization
+      ↓
+Payment
+```
+
+---
+
+# 🌐 Agentic Commerce Flow
+
+```text
+                 HUMAN
+                   │
+                   ▼
+          Natural Language Intent
+                   │
+                   ▼
+             BUYER AGENT
+                   │
+        ┌──────────┴──────────┐
+        ▼                     ▼
+ MERCHANT AGENT A       MERCHANT AGENT B
+        │                     │
+        └──────────┬──────────┘
+                   ▼
+              NEGOTIATION
+                   │
+                   ▼
+               DEAL MEMO
+                   │
+                   ▼
+           POLICY VERIFICATION
+                   │
+                   ▼
+          SHARED PAYMENT TOKEN
+                   │
+                   ▼
+           RAZORPAY PAYMENT
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
+     MERCHANT A        MERCHANT B
+          │                 │
+          └────────┬────────┘
+                   ▼
+                 ESCROW
+                   │
+                   ▼
+             DELIVERY CHECK
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
+       SUCCESS            MISMATCH
+          │                 │
+          ▼                 ▼
+    RELEASE FUNDS       AUTO REFUND
+```
+
+---
+
+# 🎯 Key Innovations
+
+### 1. Natural Language → Payment Intent
+
+Converts conversational instructions into structured transaction parameters.
+
+### 2. Autonomous Negotiation
+
+Enables Buyer and Merchant Agents to negotiate prices.
+
+### 3. Cryptographically Bound Transactions
+
+Links user intent, negotiated deal, and payment authorization.
+
+### 4. Agent Spending Guardrails
+
+Prevents agents from spending beyond predefined limits.
+
+### 5. Multi-Merchant Settlement
+
+Supports collaborative merchant transactions and split settlements.
+
+### 6. Proof-of-Intent
+
+Maintains an auditable relationship between the user's original intent and the transaction.
+
+### 7. Autonomous Dispute Resolution
+
+Uses transaction intent and delivery information to initiate automated resolution.
+
+---
+
+# 📊 Why This Architecture Matters
+
+Traditional commerce:
+
+```text
+Human → Search → Compare → Negotiate → Checkout → Dispute
+```
+
+Razorpay TrustGate:
+
+```text
+Human
+  ↓
+Intent
+  ↓
+Buyer Agent
+  ↓
+Discover
+  ↓
+Negotiate
+  ↓
+Authorize
+  ↓
+Pay
+  ↓
+Verify
+  ↓
+Resolve
+```
+
+The goal is to move from **human-driven checkout** toward **secure, policy-controlled autonomous commerce**.
+
+---
+
+# ⚠️ Prototype & Demo Disclaimer
+
+This repository is a **prototype / proof-of-concept** demonstrating an agentic payment architecture.
+
+Razorpay payment operations such as Orders, Route/Split, Refunds, and Escrow are represented through mock/sandbox interfaces where applicable.
+
+The architecture is designed so that the mock interfaces can be replaced with production payment APIs without changing the core multi-agent workflow.
+
+---
+
+# 🚀 Future Enhancements
+
+* Production Razorpay SDK integration
+* Real merchant APIs
+* Advanced fraud detection
+* ML-based risk scoring
+* Distributed agent identity
+* Real-time inventory synchronization
+* Multi-agent reputation scoring
+* Blockchain-backed audit trails
+* Production-grade escrow infrastructure
+* Advanced multilingual voice interaction
+
+---
+
+# 👩‍💻 Author
+
+**Pooja K C**
+
+AI & Data Science | Machine Learning | Agentic AI
+
+---
+
+# ⭐ Project Vision
+
+> **"The future of commerce is not humans clicking buttons. It is trusted AI agents transacting securely on behalf of humans."**
+
+**Razorpay TrustGate** aims to provide the trust, authorization, cryptographic security, and dispute mechanisms required to make that future possible.
